@@ -70,9 +70,9 @@ export const ModalProvider: React.FC<ModalProviderProps> = ({ children }) => {
         <UploadModal isOpen={isOpen} onClose={closeModal} />
       ) : mode === "album" ? (
         <AlbumModal isOpen={isOpen} onClose={closeModal} />
-      ) : (
-        <PlaylistModal />
-      )}
+      ) : mode === "playlist" ? (
+        <PlaylistModal isOpen={isOpen} onClose={closeModal} />
+      ) : null}
     </ModalContext.Provider>
   );
 };

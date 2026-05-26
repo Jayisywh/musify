@@ -4,6 +4,7 @@ import { useAuth } from "../providers/AuthProvider";
 import { useModal } from "../providers/ModalProvider";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { usePlaylists } from "../providers/PlaylistProvider";
 
 const Library = () => {
   const [openMenu, setOpenMenu] = useState(false);
@@ -16,6 +17,7 @@ const Library = () => {
     setOpenMenu((prev) => !prev);
   };
   const navigate = useNavigate();
+  const { playlists, loading, error } = usePlaylists();
   return (
     <div className="flex flex-col">
       <div className="flex items-center justify-between px-5 pt-4">
@@ -86,7 +88,36 @@ const Library = () => {
         </div>
       </div>
       <div className="flex flex-col gap-y-2 mt-4 px-3 text-white">
-        List of Songs
+        <button
+          type="button"
+          onClick={() => navigate("/liked")}
+          className="w-full text-left rounded-md px-3 py-2 hover:bg-neutral-800 transition"
+        >
+          <p className="text-sm font-medium text-white">Liked Songs</p>
+          <p className="text-xs text-neutral-400">Playlist</p>
+        </button>
+        {loading && (
+          <p className="px-3 py-2 text-sm text-neutral-500">
+            Loading playlists...
+          </p>
+        )}
+        {error && !loading && (
+          <p className="px-3 py-2 text-sm text-red-400">{error}</p>
+        )}
+        {!loading &&
+          playlists.map((playlist) => (
+            <button
+              key={playlist.id}
+              type="button"
+              onClick={() => navigate(`/playlist/${playlist.id}`)}
+              className="w-full text-left rounded-md px-3 py-2 hover:bg-neutral-800 transition"
+            >
+              <p className="truncate text-sm font-medium text-white">
+                {playlist.title}
+              </p>
+              <p>Playlist • {playlist._count?.songs ?? 0} songs</p>
+            </button>
+          ))}
       </div>
     </div>
   );

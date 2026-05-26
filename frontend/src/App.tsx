@@ -11,6 +11,10 @@ import EditSongPage from "./pages/artist/EditSongPage";
 import EditAlbumPage from "./pages/artist/EditAlbumPage";
 import SongPage from "./pages/listener/SongPage";
 import PlayerProvider from "./providers/PlayerProvider";
+import LikedSong from "./pages/listener/LikedSong";
+import LikedSongsProvider from "./providers/LikedSongsProvider";
+import PlaylistProvider from "./providers/PlaylistProvider";
+import PlaylistDetail from "./pages/listener/PlaylistDetail";
 
 const routes = createBrowserRouter([
   {
@@ -23,6 +27,14 @@ const routes = createBrowserRouter([
       {
         path: "/songs/:id",
         element: <SongPage />,
+      },
+      {
+        path: "/liked",
+        element: <LikedSong />,
+      },
+      {
+        path: "/playlist/:playlistId",
+        element: <PlaylistDetail />,
       },
     ],
   },
@@ -62,7 +74,11 @@ function App() {
   return (
     <AuthProvider>
       <PlayerProvider>
-        <RouterProvider router={routes} />
+        <LikedSongsProvider>
+          <PlaylistProvider>
+            <RouterProvider router={routes} />
+          </PlaylistProvider>
+        </LikedSongsProvider>
       </PlayerProvider>
     </AuthProvider>
   );

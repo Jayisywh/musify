@@ -4,6 +4,8 @@ import ListItem from "../../components/ListItem";
 import { api } from "../../lib/api";
 import { Link } from "react-router-dom";
 import { usePlayer } from "../../providers/PlayerProvider";
+import { ListPlus } from "lucide-react";
+import AddToPlaylistModal from "../../components/AddToPlaylistModal";
 
 interface Song {
   id: string;
@@ -19,7 +21,11 @@ const Home = () => {
   const [songs, setSongs] = useState<Song[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
-  const { currentSong, setCurrentSong, isPlaying, togglePlay } = usePlayer();
+  const { currentSong, setCurrentSong, isPlaying, togglePlay, addQueue } =
+    usePlayer();
+  const [addToPlaylistSongId, setAddToPlaylistSongId] = useState<string | null>(
+    null,
+  );
   useEffect(() => {
     const fetchSongs = async () => {
       try {
@@ -43,14 +49,25 @@ const Home = () => {
       togglePlay();
       return;
     }
-    setCurrentSong({
+    const playerSongs = songs.map((song) => ({
       id: song.id,
       title: song.title,
       artist: song.artist.name || song.artist.username,
       artistId: song.artist.id,
       coverUrl: song.coverImgUrl || "/default-cover.png",
       audioUrl: song.audioUrl,
-    });
+    }));
+    const selectedSong = playerSongs.find((item) => item.id === song.id);
+    if (!selectedSong) return;
+    setCurrentSong(selectedSong, playerSongs);
+  };
+
+  const openAddToPlaylist = (songId: string) => {
+    setAddToPlaylistSongId(songId);
+  };
+
+  const closeAddToPlaylist = () => {
+    setAddToPlaylistSongId(null);
   };
   return (
     <div className="bg-neutral-900 h-full w-full rounded-lg overflow-hidden overflow-y-auto">
@@ -76,6 +93,15 @@ const Home = () => {
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4 mt-4">
             {songs.map((song) => {
               const isCurrent = currentSong?.id === song.id;
+
+              const playerSong = {
+                id: song.id,
+                title: song.title,
+                artist: song.artist.name || song.artist.username,
+                artistId: song.artist.id,
+                coverUrl: song.coverImgUrl || "/default-cover.png",
+                audioUrl: song.audioUrl,
+              };
               return (
                 <div
                   key={song.id}
@@ -119,11 +145,35 @@ const Home = () => {
                   </Link>
                   <Link
                     to={`/artists/${song.artist.id}`}
-                    onClick={(e) => e.stopPropagation()}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                    }}
                     className="text-gray-400 text-sm truncate block hover:text-shadow-white"
                   >
                     {song.artist.name || song.artist.username}
                   </Link>
+                  <div className="mt-2 flex items-center gap-3">
+                    <button
+                      type="button"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        addQueue(playerSong);
+                      }}
+                      className="text-xs text-neutral-400 hover:text-white"
+                    >
+                      <ListPlus className="size-4" />
+                    </button>
+                    <button
+                      type="button"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        openAddToPlaylist(song.id);
+                      }}
+                      className="text-xs text-neutral-400 hover:text-white"
+                    >
+                      Add to playlist
+                    </button>
+                  </div>
                 </div>
               );
             })}
@@ -131,6 +181,11 @@ const Home = () => {
         )}
         <div>List of song</div>
       </div>
+      <AddToPlaylistModal
+        isOpen={Boolean(addToPlaylistSongId)}
+        onClose={closeAddToPlaylist}
+        songId={addToPlaylistSongId}
+      />
     </div>
   );
 };

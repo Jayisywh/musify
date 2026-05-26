@@ -18,3 +18,29 @@ body,
 .error {
   @apply text-red-500 text-xs mt-1;
 }
+
+.player-slider {
+  appearance: none;
+  height: 4px;
+  border-radius: 9999px;
+  background: #404040;
+  cursor: pointer;
+}
+
+.player-slider::-webkit-slider-thumb {
+  appearance: none;
+  width: 8px;
+  height: 8px;
+  border-radius: 9999px;
+  background: white;
+  cursor: pointer;
+}
+
+.player-slider::-moz-range-thumb {
+  width: 8px;
+  height: 8px;
+  border-radius: 9999px;
+  background: white;
+  border: none;
+  cursor: pointer;
+}

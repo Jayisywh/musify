@@ -23,56 +23,101 @@ enum Subscription {
 }
 
 model Account {
-  id String @id @default(uuid())
-  username String @unique
-  name String?
-  email String @unique
+  id             String         @id @default(uuid())
+  username       String         @unique
+  name           String?
+  email          String         @unique
   hashedPassword String
-  role Role @default(listener)
-  bio String?
-  avatarUrl String?
-  subscription Subscription @default(free)
-  isVerified Boolean @default(false)
-  lastLoginAt DateTime?
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  songs Song[]
-  albums Album[]
+  role           Role           @default(listener)
+  bio            String?
+  avatarUrl      String?
+  subscription   Subscription   @default(free)
+  isVerified     Boolean        @default(false)
+  lastLoginAt    DateTime?
+  createdAt      DateTime       @default(now())
+  updatedAt      DateTime       @updatedAt
+  songs          Song[]
+  albums         Album[]
+  favoriteSongs  FavoriteSong[]
+  playList       Playlist[]
 }
 
 model Song {
-  id String @id @default(uuid())
-  title String
-  genre String
-  artistId String
-  artist Account @relation(fields: [artistId], references: [id])
-  albumId String?
-  album Album? @relation(fields: [albumId], references: [id])
-  description String?
-  coverImgUrl String?
-  duration Int
-  audioUrl String
-  language String?
-  lyrics Json?
-  playCount Int @default(0)
-  isPublished Boolean @default(true)
-  metadata Json?
-  releaseDate DateTime?
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  id            String         @id @default(uuid())
+  title         String
+  genre         String
+  artistId      String
+  artist        Account        @relation(fields: [artistId], references: [id])
+  albumId       String?
+  album         Album?         @relation(fields: [albumId], references: [id])
+  description   String?
+  coverImgUrl   String?
+  duration      Int
+  audioUrl      String
+  language      String?
+  lyrics        Json?
+  playCount     Int            @default(0)
+  isPublished   Boolean        @default(true)
+  metadata      Json?
+  releaseDate   DateTime?
+  createdAt     DateTime       @default(now())
+  updatedAt     DateTime       @updatedAt
+  favoriteSongs FavoriteSong[]
+  playlistSongs PlaylistSong[]
 }
 
 model Album {
-  id String @id @default(uuid())
-  title String
+  id          String    @id @default(uuid())
+  title       String
   description String?
-  artistId String
-  artist Account @relation(fields: [artistId], references: [id])
-  coverUrl String?
+  artistId    String
+  artist      Account   @relation(fields: [artistId], references: [id])
+  coverUrl    String?
   releaseDate DateTime?
-  isPublished Boolean @default(true)
-  metadata Json?
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  songs Song[]
+  isPublished Boolean   @default(true)
+  metadata    Json?
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  songs       Song[]
+}
+
+model FavoriteSong {
+  id         String   @id @default(uuid())
+  listenerId String
+  songId     String
+  addedAt    DateTime @default(now())
+  listener   Account  @relation(fields: [listenerId], references: [id], onDelete: Cascade)
+  song       Song     @relation(fields: [songId], references: [id], onDelete: Cascade)
+
+  @@unique([listenerId, songId])
+  @@index([listenerId])
+  @@index([songId])
+}
+
+model Playlist {
+  id          String         @id @default(uuid())
+  title       String
+  description String?
+  coverUrl    String?
+  isPublic    Boolean        @default(false)
+  ownerId     String
+  owner       Account        @relation(fields: [ownerId], references: [id], onDelete: Cascade)
+  songs       PlaylistSong[]
+  createdAt   DateTime       @default(now())
+  updatedAt   DateTime       @updatedAt
+
+  @@index([ownerId])
+}
+
+model PlaylistSong {
+  id         String   @id @default(uuid())
+  playlistId String
+  songId     String
+  playlist   Playlist @relation(fields: [playlistId], references: [id], onDelete: Cascade)
+  song       Song     @relation(fields: [songId], references: [id], onDelete: Cascade)
+  addedAt    DateTime @default(now())
+
+  @@unique([playlistId, songId])
+  @@index([playlistId])
+  @@index([songId])
 }
