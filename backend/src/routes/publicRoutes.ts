@@ -11,7 +11,7 @@ import {
 const publicRouter = Router();
 
 publicRouter.get("/songs", getPublicSongs);
-publicRouter.get("/song/:id", getPublicSongById);
+publicRouter.get("/songs/:id", getPublicSongById);
 
 publicRouter.get("/songs/:id/play", incrementPlayCount);
 

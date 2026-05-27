@@ -9,6 +9,7 @@ import albumRouter from "./routes/albumRoutes";
 import publicRouter from "./routes/publicRoutes";
 import likedSongRouter from "./routes/likedSongRoutes";
 import playlistRouter from "./routes/playlistRoutes";
+import searchRouter from "./routes/searchRoutes";
 dotenv.config();
 const app = express();
 
@@ -44,6 +45,7 @@ app.use("/api/albums", albumRouter);
 app.use("/api/public", publicRouter);
 app.use("/api/likedsongs", likedSongRouter);
 app.use("/api/playlists", playlistRouter);
+app.use("/api/search", searchRouter);
 
 app.get("/", (req, res) => {
   res.send(`Backend running`);

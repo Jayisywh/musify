@@ -2,6 +2,7 @@ import express from "express";
 import {
   createAlbum,
   deleteAlbum,
+  getAlbumById,
   getAlbums,
   getSingleAlbum,
   updateAlbum,
@@ -13,8 +14,9 @@ import { upload } from "../middlewares/upload";
 const albumRouter = express.Router();
 albumRouter.use(protect, artistOnly);
 albumRouter.get("/", getAlbums);
-albumRouter.get("/:id", protect, artistOnly, getSingleAlbum);
-albumRouter.post("/", protect, artistOnly, upload.single("cover"), createAlbum);
+albumRouter.get("/:albumId", getAlbumById);
+albumRouter.get("/:id", getSingleAlbum);
+albumRouter.post("/", upload.single("cover"), createAlbum);
 albumRouter.patch(
   "/:id",
   protect,
@@ -22,5 +24,5 @@ albumRouter.patch(
   upload.single("cover"),
   updateAlbum,
 );
-albumRouter.delete("/:id", protect, artistOnly, deleteAlbum);
+albumRouter.delete("/:id", deleteAlbum);
 export default albumRouter;

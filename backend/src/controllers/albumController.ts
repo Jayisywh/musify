@@ -50,6 +50,76 @@ export const createAlbum = async (req: Request, res: Response) => {
   }
 };
 
+export const getAlbumById = async (req: Request, res: Response) => {
+  try {
+    const { albumId } = req.params;
+    if (!albumId || typeof albumId !== "string") {
+      return res.status(400).json({
+        status: "fail",
+        message: "Album Id is required",
+      });
+    }
+    const album = await prisma.album.findUnique({
+      where: {
+        id: albumId,
+      },
+      select: {
+        id: true,
+        title: true,
+        description: true,
+        coverUrl: true,
+        releaseDate: true,
+        createdAt: true,
+        updatedAt: true,
+        artist: {
+          select: {
+            id: true,
+            name: true,
+            username: true,
+          },
+        },
+        songs: {
+          orderBy: {
+            createdAt: "asc",
+          },
+          select: {
+            id: true,
+            title: true,
+            audioUrl: true,
+            coverImgUrl: true,
+            duration: true,
+            playCount: true,
+            createdAt: true,
+            artist: {
+              select: {
+                id: true,
+                name: true,
+                username: true,
+              },
+            },
+          },
+        },
+      },
+    });
+    if (!album) {
+      return res.status(404).json({
+        status: "fail",
+        message: "Album is not found",
+      });
+    }
+    return res.status(200).json({
+      status: "success",
+      data: album,
+    });
+  } catch (error) {
+    console.error("Failed to get album:", error);
+    return res.status(500).json({
+      status: "fail",
+      message: "Failed to get album",
+    });
+  }
+};
+
 export const getSingleAlbum = async (req: Request, res: Response) => {
   try {
     if (!req.user) {

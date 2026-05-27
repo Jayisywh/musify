@@ -93,15 +93,30 @@ export const getPublicSongs = async (req: Request, res: Response) => {
 export const getPublicSongById = async (req: Request, res: Response) => {
   try {
     const { id } = req.params;
+
     if (!id || typeof id !== "string") {
       return res.status(400).json({
         status: "fail",
         message: "Invalid Id",
       });
     }
+
     const song = await prisma.song.findFirst({
-      where: { id, isPublished: true },
-      include: {
+      where: {
+        id,
+        isPublished: true,
+      },
+      select: {
+        id: true,
+        title: true,
+        genre: true,
+        audioUrl: true,
+        coverImgUrl: true,
+        playCount: true,
+        duration: true,
+        language: true,
+        releaseDate: true,
+        createdAt: true,
         artist: {
           select: {
             id: true,
@@ -110,27 +125,36 @@ export const getPublicSongById = async (req: Request, res: Response) => {
             avatarUrl: true,
           },
         },
-        album: true,
+        album: {
+          select: {
+            id: true,
+            title: true,
+            coverUrl: true,
+          },
+        },
       },
     });
+
     if (!song) {
       return res.status(404).json({
         status: "fail",
         message: "Song is not found",
       });
     }
+
     return res.status(200).json({
       status: "success",
       data: song,
     });
-  } catch {
+  } catch (error) {
+    console.error("Get public song by id error:", error);
+
     return res.status(500).json({
       status: "fail",
       message: "Failed to fetch song",
     });
   }
 };
-
 export const getPublicAlbums = async (req: Request, res: Response) => {
   try {
     const { q, page = "1", limit = "20" } = req.params;
@@ -230,7 +254,49 @@ export const getPublicArtistById = async (req: Request, res: Response) => {
         songs: {
           where: { isPublished: true },
           orderBy: { createdAt: "desc" },
-          take: 6,
+          select: {
+            id: true,
+            title: true,
+            genre: true,
+            audioUrl: true,
+            coverImgUrl: true,
+            playCount: true,
+            duration: true,
+            createdAt: true,
+            artist: {
+              select: {
+                id: true,
+                name: true,
+                username: true,
+              },
+            },
+            album: {
+              select: {
+                id: true,
+                title: true,
+                coverUrl: true,
+              },
+            },
+          },
+        },
+        albums: {
+          where: {
+            isPublished: true,
+          },
+          orderBy: {
+            createdAt: "desc",
+          },
+          select: {
+            id: true,
+            title: true,
+            coverUrl: true,
+            releaseDate: true,
+            _count: {
+              select: {
+                songs: true,
+              },
+            },
+          },
         },
       },
     });

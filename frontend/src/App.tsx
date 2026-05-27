@@ -15,6 +15,9 @@ import LikedSong from "./pages/listener/LikedSong";
 import LikedSongsProvider from "./providers/LikedSongsProvider";
 import PlaylistProvider from "./providers/PlaylistProvider";
 import PlaylistDetail from "./pages/listener/PlaylistDetail";
+import AlbumDetail from "./pages/listener/AlbumDetail";
+import Search from "./pages/listener/Search";
+import ArtistDetail from "./pages/listener/ArtistDetail";
 
 const routes = createBrowserRouter([
   {
@@ -35,6 +38,18 @@ const routes = createBrowserRouter([
       {
         path: "/playlist/:playlistId",
         element: <PlaylistDetail />,
+      },
+      {
+        path: "/albums/:albumId",
+        element: <AlbumDetail />,
+      },
+      {
+        path: "/search",
+        element: <Search />,
+      },
+      {
+        path: "/artists/:id",
+        element: <ArtistDetail />,
       },
     ],
   },
