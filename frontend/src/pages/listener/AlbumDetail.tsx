@@ -1,9 +1,10 @@
-import { Link, useNavigate, useParams } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import { usePlayer } from "../../providers/PlayerProvider";
 import { useEffect, useMemo, useState } from "react";
 import { getAlbumById } from "../../lib/albumApi";
 import { Music, Play } from "lucide-react";
 import Header from "../../components/Header";
+import StateMessage from "./StateMessage";
 
 interface AlbumSong {
   id: string;
@@ -33,7 +34,6 @@ interface AlbumDetailData {
 
 const AlbumDetail = () => {
   const { albumId } = useParams();
-  const navigate = useNavigate();
   const { currentSong, isPlaying, setCurrentSong, togglePlay } = usePlayer();
   const [album, setAlbum] = useState<AlbumDetailData | null>(null);
   const [loading, setLoading] = useState(false);
@@ -93,24 +93,21 @@ const AlbumDetail = () => {
 
   if (loading) {
     return (
-      <div className="h-full rounded-lg bg-neutral-900 p-6 text-neutral-400">
-        Loading Album...
-      </div>
+      <StateMessage
+        type="loading"
+        title="Loading album..."
+        message="Getting album details"
+      />
     );
   }
 
   if (error || !album) {
     return (
-      <div className="h-full rounded-lg bg-neutral-900 p-6">
-        <p className="text-red-400">{error || "Album not found"}</p>
-        <button
-          className="mt-4 rounded-full bg-white px-5 py-2 text-sm font-bold text-black"
-          type="button"
-          onClick={() => navigate("/")}
-        >
-          Go home
-        </button>
-      </div>
+      <StateMessage
+        type="error"
+        title="Album is not found"
+        message={error || "This album may have been removed"}
+      />
     );
   }
   return (
@@ -170,11 +167,11 @@ const AlbumDetail = () => {
         </button>
 
         {album.songs.length === 0 ? (
-          <div className="mt-10 text-center">
-            <h2 className="text-2xl font-bold text-white">
-              No songs in this album yet
-            </h2>
-          </div>
+          <StateMessage
+            type="empty"
+            title="No songs in this album yet"
+            message="Songs added to this album will appear here"
+          />
         ) : (
           <div className="space-y-1">
             <div className="grid grid-cols-[40px_minmax(0,1fr)_120px] gap-4 border-b border-neutral-800 px-4 py-2 text-sm text-neutral-400">

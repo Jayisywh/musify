@@ -1,10 +1,11 @@
-import { Link, useNavigate, useParams } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import { usePlayer } from "../../providers/PlayerProvider";
 import { useEffect, useMemo, useState } from "react";
 import { getArtistById } from "../../lib/artistApi";
 import AddToPlaylistModal from "../../components/AddToPlaylistModal";
 import { ListPlus, Music, Play, User } from "lucide-react";
 import Header from "../../components/Header";
+import StateMessage from "./StateMessage";
 
 interface ArtistSong {
   id: string;
@@ -49,7 +50,6 @@ interface ArtistDetailData {
 
 const ArtistDetail = () => {
   const { id } = useParams<{ id: string }>();
-  const navigate = useNavigate();
   const { currentSong, isPlaying, setCurrentSong, togglePlay } = usePlayer();
   const [artist, setArtist] = useState<ArtistDetailData | null>(null);
   const [loading, setLoading] = useState(false);
@@ -114,23 +114,20 @@ const ArtistDetail = () => {
   };
   if (loading) {
     return (
-      <div className="h-full rounded-lg bg-neutral-900 p-6 text-neutral-400">
-        Loading artist...
-      </div>
+      <StateMessage
+        type="loading"
+        title="Loading artist..."
+        message="Getting artist profile"
+      />
     );
   }
   if (error || !artist) {
     return (
-      <div className="h-full rounded-lg bg-neutral-900 p-6">
-        <p className="text-red-400">{error || "Artist not found"}</p>
-        <button
-          type="button"
-          onClick={() => navigate("/")}
-          className="mt-4 rounded-full bg-white px-5 py-2 text-sm font-bold text-black"
-        >
-          Go home
-        </button>
-      </div>
+      <StateMessage
+        type="error"
+        title="Artist not found"
+        message={error || "This artist does not exist"}
+      />
     );
   }
   const artistName = artist.name || artist.username || "Unknown artist";
@@ -140,6 +137,13 @@ const ArtistDetail = () => {
     <div className="h-full w-full overflow-y-auto rounded-lg bg-neutral-900">
       <Header>
         <div className="flex flex-col gap-6 px-6 pb-6 md:flex-row md:items-end">
+          {!hasSongs && (
+            <StateMessage
+              type="empty"
+              title="No songs yet"
+              message="This artist has no published songs yet"
+            />
+          )}
           {artist.avatarUrl ? (
             <img
               src={artist.avatarUrl}

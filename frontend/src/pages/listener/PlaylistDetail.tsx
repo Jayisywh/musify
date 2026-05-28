@@ -6,6 +6,7 @@ import { getPlaylistById, removeSongFromPlaylist } from "../../lib/playlistApi";
 import Header from "../../components/Header";
 import { Music, Pencil, Play, Trash2 } from "lucide-react";
 import EditPlaylistModal from "../../components/EditPlaylistModal";
+import StateMessage from "./StateMessage";
 
 interface PlaylistSongItem {
   id: string;
@@ -151,23 +152,20 @@ const PlaylistDetail = () => {
 
   if (loading) {
     return (
-      <div className="h-full rounded-lg bg-neutral-900 p-6 text-neutral-400">
-        Loading playlist...
-      </div>
+      <StateMessage
+        type="loading"
+        title="Loading playlist..."
+        message="Getting playlist details"
+      />
     );
   }
   if (error || !playlist) {
     return (
-      <div className="h-full rounded-lg bg-neutral-900 p-6">
-        <p className="text-red-400">{error || "Playlist not found"}</p>
-        <button
-          type="button"
-          onClick={() => navigate("/")}
-          className="mt-4 rounded-full bg-white px-5 py-2 text-sm font-bold text-black"
-        >
-          Go Home
-        </button>
-      </div>
+      <StateMessage
+        type="error"
+        title="Playlist is not found"
+        message={error || "This playlist may have been deleted"}
+      />
     );
   }
   return (
@@ -232,14 +230,11 @@ const PlaylistDetail = () => {
           <Play className="ml-1 h-7 w-7" fill="currentColor" />
         </button>
         {playlist.songs.length === 0 ? (
-          <div className="mt-10 text-center">
-            <h2 className="text-2xl font-bold text-white">
-              No songs in this playlist yet
-            </h2>
-            <p className="mt-2 text-neutral-400">
-              Add songs from Home or Search
-            </p>
-          </div>
+          <StateMessage
+            type="empty"
+            title="No songs in this playlist yet"
+            message="Add songs from Home, Search, or Song pages"
+          />
         ) : (
           <div className="space-y-1">
             <div className="grid grid-cols-[40px_minmax(0,1fr)_140px_80px] gap-4 border-b border-neutral-800 px-4 py-2 text-sm text-neutral-400">

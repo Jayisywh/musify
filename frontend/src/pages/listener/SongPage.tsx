@@ -1,11 +1,12 @@
 import { useEffect, useRef, useState } from "react";
-import { Link, useNavigate, useParams } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import { Heart, ListPlus, Music, Play, Plus } from "lucide-react";
 import { api } from "../../lib/api";
 import Header from "../../components/Header";
 import AddToPlaylistModal from "../../components/AddToPlaylistModal";
 import { usePlayer } from "../../providers/PlayerProvider";
 import { useLikedSongs } from "../../providers/LikedSongsProvider";
+import StateMessage from "./StateMessage";
 
 interface Song {
   id: string;
@@ -33,7 +34,6 @@ interface Song {
 
 const SongPage = () => {
   const { id } = useParams<{ id: string }>();
-  const navigate = useNavigate();
 
   const { currentSong, isPlaying, setCurrentSong, togglePlay, addQueue } =
     usePlayer();
@@ -119,25 +119,21 @@ const SongPage = () => {
 
   if (loading) {
     return (
-      <div className="h-full rounded-lg bg-neutral-900 p-6 text-neutral-400">
-        Loading song...
-      </div>
+      <StateMessage
+        type="loading"
+        title="Loading song..."
+        message="Getting the song details"
+      />
     );
   }
 
   if (error || !song || !playerSong) {
     return (
-      <div className="h-full rounded-lg bg-neutral-900 p-6">
-        <p className="text-red-400">{error || "Song is not found"}</p>
-
-        <button
-          type="button"
-          onClick={() => navigate("/")}
-          className="mt-4 rounded-full bg-white px-5 py-2 text-sm font-bold text-black"
-        >
-          Go home
-        </button>
-      </div>
+      <StateMessage
+        type="error"
+        title="Song not found"
+        message={error || "This song may have been removed or unpublished"}
+      />
     );
   }
 

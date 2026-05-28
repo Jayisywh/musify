@@ -2,6 +2,7 @@ import { usePlayer } from "../../providers/PlayerProvider";
 import Header from "../../components/Header";
 import { Heart, Play } from "lucide-react";
 import { useLikedSongs } from "../../providers/LikedSongsProvider";
+import StateMessage from "./StateMessage";
 
 interface LikedSong {
   id: string;
@@ -66,18 +67,23 @@ const LikedSong = () => {
       </Header>
       <div className="px-6 py-5">
         {loading ? (
-          <p className="text-neural-400">Loading liked songs...</p>
+          <StateMessage
+            type="loading"
+            title="Loading liked songs..."
+            message="Getting your favorite songs"
+          />
         ) : error ? (
-          <p className="text-red-400">{error}</p>
+          <StateMessage
+            type="error"
+            title="Failed to load liked songs"
+            message={error}
+          />
         ) : likedSongs.length === 0 ? (
-          <div className="mt-10 text-center">
-            <h2 className="text-white text-2xl font-bold">
-              Songs you like will appear here
-            </h2>
-            <p className="text-neutral-400 mt-2">
-              Save songs by tapping the heart icon
-            </p>
-          </div>
+          <StateMessage
+            type="empty"
+            title="No liked songs yet"
+            message="Tap the heart on songs you love, and they will appear here"
+          />
         ) : (
           <div className="space-y-1">
             <div className="grid grid-cols-[40px_1fr_140px_80px] gap-4 px-4 py-2 text-neutral-400 text-sm border-b border-neutral-800">

@@ -11,6 +11,7 @@ import Header from "../../components/Header";
 import AddToPlaylistModal from "../../components/AddToPlaylistModal";
 import { searchMusify } from "../../lib/searchApi";
 import { usePlayer } from "../../providers/PlayerProvider";
+import StateMessage from "./StateMessage";
 
 interface SearchSong {
   id: string;
@@ -162,18 +163,23 @@ const Search = () => {
         )}
 
         {loading && hasQuery && (
-          <p className="text-sm text-neutral-400">Searching...</p>
+          <StateMessage
+            type="loading"
+            title="Searching..."
+            message="Looking for songs, artists, and albums"
+          />
         )}
 
-        {error && !loading && <p className="text-sm text-red-400">{error}</p>}
+        {error && !loading && (
+          <StateMessage type="error" title="Search failed" message={error} />
+        )}
 
         {!loading && hasQuery && !error && !hasResults && (
-          <div className="mt-10 text-center">
-            <h2 className="text-2xl font-bold text-white">No results found</h2>
-            <p className="mt-2 text-neutral-400">
-              Try searching for something else.
-            </p>
-          </div>
+          <StateMessage
+            type="empty"
+            title="No results found"
+            message="Try searching for another song, artist, or album"
+          />
         )}
 
         {!loading && hasResults && (
