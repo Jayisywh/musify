@@ -1,5 +1,3 @@
-import { BiSearch } from "react-icons/bi";
-import { HiHome } from "react-icons/hi";
 import { RxCaretLeft, RxCaretRight } from "react-icons/rx";
 import { useNavigate } from "react-router-dom";
 import { twMerge } from "tailwind-merge";
@@ -26,7 +24,7 @@ const Header: React.FC<HeaderProps> = ({ children, className }) => {
         className,
       )}
     >
-      <div className="w-full mb-4 flex items-center justify-between">
+      <div className="w-full mb-4 flex items-center justify-end md:justify-between">
         <div className="hidden md:flex gap-x-2 items-center">
           <button
             className="rounded-full bg-black flex items-center justify-center cursor-pointer hover:opacity-75 transition"
@@ -41,15 +39,7 @@ const Header: React.FC<HeaderProps> = ({ children, className }) => {
             <RxCaretRight size={35} className="text-white" />
           </button>
         </div>
-        <div className="flex md:hidden gap-x-2 items-center">
-          <button className="rounded-full p-2 bg-white flex items-center justify-center hover:opacity-75 transition">
-            <HiHome className="text-black" size={20} />
-          </button>
-          <button className="rounded-full p-2 bg-white flex items-center justify-center hover:opacity-75 transition">
-            <BiSearch className="text-black" size={20} />
-          </button>
-        </div>
-        <div className="flex justify-between items-center gap-x-4">
+        <div className="flex justify-end items-center gap-x-4 ml-auto">
           {user ? (
             <div className="flex gap-x-4 items-center">
               <Button className="bg-white px-6 py-2" onClick={handleLogout}>

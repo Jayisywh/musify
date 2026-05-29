@@ -25,13 +25,17 @@ const Library = () => {
           <TbPlaylist className="text-neutral-400" size={26} />
           <p className="text-neutral-400 font-medium text-md">Your Library</p>
         </div>
-        <div className="relative">
-          <AiOutlinePlus
+        <div className="relative shrink-0">
+          <button
+            type="button"
             onClick={onClick}
-            className="text-neutral-400 cursor-pointer hover:text-white transition"
-          />
+            className="flex h-8 w-8 items-center justify-center rounded-full text-neutral-400 transition hover:bg-neutral-800 hover:text-white"
+            aria-label="Create"
+          >
+            <AiOutlinePlus size={18} />
+          </button>
           {openMenu && (
-            <div className="absolute right-0 top-8 bg-[#282828] rounded-lg w-44 p-2 shadow-lg z-50">
+            <div className="absolute right-0 top-10 bg-[#282828] rounded-lg w-44 p-2 shadow-lg z-50">
               {user?.role === "artist" && (
                 <>
                   <button
@@ -115,7 +119,9 @@ const Library = () => {
               <p className="truncate text-sm font-medium text-white">
                 {playlist.title}
               </p>
-              <p>Playlist • {playlist._count?.songs ?? 0} songs</p>
+              <p className="text-xs text-neutral-400">
+                Playlist • {playlist._count?.songs ?? 0} songs
+              </p>
             </button>
           ))}
       </div>

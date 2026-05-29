@@ -5,7 +5,8 @@ import { useLocation } from "react-router-dom";
 import Box from "./Box";
 import SidebarItem from "./SidebarItem";
 import Library from "./Library";
-import MobileActionBtn from "./MobileActionBtn";
+import MobileLibraryBtn from "./MobileLibrary";
+import MobileTopNav from "./MobileTopNav";
 
 type SidebarProps = {
   children: React.ReactNode;
@@ -33,8 +34,8 @@ const Sidebar: React.FC<SidebarProps> = ({ children }) => {
   );
 
   return (
-    <div className="flex h-full w-full gap-2">
-      <aside className="hidden md:flex flex-col gap-y-2 bg-black h-full w-75 shrink-0">
+    <div className="flex h-full w-full min-w-0 gap-2">
+      <aside className="hidden h-full w-70 shrink-0 flex-col gap-y-2 bg-black md:flex lg:w-75">
         <Box>
           <div className="flex flex-col gap-y-4 px-5 py-4">
             {routes.map((item) => (
@@ -48,11 +49,12 @@ const Sidebar: React.FC<SidebarProps> = ({ children }) => {
         </Box>
       </aside>
 
-      <main className="flex-1 h-full min-w-0 overflow-hidden">
+      <main className="h-full min-w-0 flex-1 overflow-hidden">
         <div className="h-full w-full overflow-y-auto">{children}</div>
       </main>
 
-      <MobileActionBtn />
+      <MobileTopNav />
+      <MobileLibraryBtn />
     </div>
   );
 };

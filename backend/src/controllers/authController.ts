@@ -104,24 +104,28 @@ export const getMe = async (req: Request, res: Response) => {
     const decoded = jwt.verify(token, process.env.JWT_SECRET as string) as {
       userId: string;
     };
-    const user = await prisma.account.findUnique({
+    const account = await prisma.account.findUnique({
       where: {
         id: decoded.userId,
       },
+      select: {
+        id: true,
+        email: true,
+        username: true,
+        name: true,
+        avatarUrl: true,
+        role: true,
+        createdAt: true,
+      },
     });
-    if (!user) {
+    if (!account) {
       return res.status(401).json({
         message: "Account not found",
       });
     }
     return res.status(200).json({
       status: "success",
-      data: {
-        id: user.id,
-        username: user.username,
-        name: user.name,
-        role: user.role,
-      },
+      data: account,
     });
   } catch {
     return res.status(401).json({

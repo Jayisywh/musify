@@ -18,6 +18,7 @@ import PlaylistDetail from "./pages/listener/PlaylistDetail";
 import AlbumDetail from "./pages/listener/AlbumDetail";
 import Search from "./pages/listener/Search";
 import ArtistDetail from "./pages/listener/ArtistDetail";
+import Account from "./pages/listener/Account";
 
 const routes = createBrowserRouter([
   {
@@ -50,6 +51,10 @@ const routes = createBrowserRouter([
       {
         path: "/artists/:id",
         element: <ArtistDetail />,
+      },
+      {
+        path: "/account",
+        element: <Account />,
       },
     ],
   },
