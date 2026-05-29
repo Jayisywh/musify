@@ -14,7 +14,7 @@ const StateMessage: React.FC<StateMessageProps> = ({
   const Icon =
     type === "loading" ? Loader2 : type === "error" ? AlertCircle : Music;
   return (
-    <div className="flex min-h-75 flex-col items-center justify-center rounded-lg bg-neutral-900 px-6 py-10 text-center">
+    <div className="flex h-full min-h-[calc(100vh-180px)] flex-col items-center justify-center rounded-lg bg-neutral-900 px-6 py-10 text-center">
       <Icon
         className={`mb-4 h-12 w-12 text-neutral-500 ${type === "loading" ? "animate-spin" : ""}`}
       />

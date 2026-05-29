@@ -3,9 +3,11 @@ import {
   useCallback,
   useContext,
   useEffect,
+  useRef,
   useState,
   type ReactNode,
 } from "react";
+import { recordSongPlay } from "../lib/songApi";
 
 interface Song {
   id: string;
@@ -82,9 +84,7 @@ const PlayerProvider = ({ children }: { children: ReactNode }) => {
   );
 
   const [queue, setQueue] = useState<Song[]>(savedPlayerState?.queue || []);
-  useEffect(() => {
-    console.log("Current queue:", queue);
-  }, [queue]);
+  const lastRecordedAtRef = useRef<Record<string, number>>({});
 
   const addQueue = (song: Song) => {
     setQueue((prev) => [...prev, song]);
@@ -191,6 +191,27 @@ const PlayerProvider = ({ children }: { children: ReactNode }) => {
     };
     localStorage.setItem(PLAYER_STORAGE_KEY, JSON.stringify(playerState));
   }, [currentIndex, currentSong, songs, repeatMode, isShuffle, queue]);
+
+  useEffect(() => {
+    if (!currentSong || !isPlaying) return;
+
+    const timeoutId = window.setTimeout(async () => {
+      try {
+        const now = Date.now();
+        const lastRecordedAt = lastRecordedAtRef.current[currentSong.id] || 0;
+        const cooldownMs = 60_000;
+        if (now - lastRecordedAt < cooldownMs) {
+          return;
+        }
+        await recordSongPlay(currentSong.id);
+        lastRecordedAtRef.current[currentSong.id] = now;
+      } catch (error) {
+        console.error("Failed to record song play:", error);
+      }
+    }, 10000);
+
+    return () => window.clearTimeout(timeoutId);
+  }, [currentSong, isPlaying]);
 
   return (
     <PlayerContext.Provider

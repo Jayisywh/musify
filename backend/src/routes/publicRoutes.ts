@@ -13,7 +13,7 @@ const publicRouter = Router();
 publicRouter.get("/songs", getPublicSongs);
 publicRouter.get("/songs/:id", getPublicSongById);
 
-publicRouter.get("/songs/:id/play", incrementPlayCount);
+publicRouter.patch("/songs/:id/play", incrementPlayCount);
 
 publicRouter.get("/albums", getPublicAlbums);
 publicRouter.get("/albums/:id", getPublicAlbumById);

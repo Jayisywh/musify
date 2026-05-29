@@ -46,7 +46,7 @@ const AlbumDetail = () => {
       title: song.title,
       artist: song.artist.name || song.artist.username,
       artistId: song.artist.id,
-      coverUrl: song.coverImgUrl || album.coverUrl || "/deafult-cover.png",
+      coverUrl: song.coverImgUrl || album.coverUrl || "/default-cover.png",
       audioUrl: song.audioUrl,
     }));
   }, [album]);

@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import { Heart, ListPlus, Music, Play, Plus } from "lucide-react";
 import { api } from "../../lib/api";
@@ -43,10 +43,7 @@ const SongPage = () => {
   const [song, setSong] = useState<Song | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
-  const [hasPlayed, setHasPlayed] = useState(false);
   const [isAddToPlaylistOpen, setIsAddToPlaylistOpen] = useState(false);
-
-  const audioRef = useRef<HTMLAudioElement>(null);
 
   useEffect(() => {
     if (!id) return;
@@ -86,21 +83,8 @@ const SongPage = () => {
       }
     : null;
 
-  const recordPlay = async () => {
-    if (!id || hasPlayed) return;
-
-    try {
-      await api.patch(`/api/public/songs/${id}/play`);
-      setHasPlayed(true);
-    } catch (error) {
-      console.log("Failed to record play:", error);
-    }
-  };
-
   const handlePlay = async () => {
     if (!playerSong) return;
-
-    await recordPlay();
 
     const isCurrent = currentSong?.id === playerSong.id;
 
@@ -319,8 +303,6 @@ const SongPage = () => {
           </div>
         </div>
       </div>
-
-      <audio ref={audioRef} src={song.audioUrl} className="hidden" />
 
       <AddToPlaylistModal
         isOpen={isAddToPlaylistOpen}

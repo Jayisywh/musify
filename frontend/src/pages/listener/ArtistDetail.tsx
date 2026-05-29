@@ -137,13 +137,6 @@ const ArtistDetail = () => {
     <div className="h-full w-full overflow-y-auto rounded-lg bg-neutral-900">
       <Header>
         <div className="flex flex-col gap-6 px-6 pb-6 md:flex-row md:items-end">
-          {!hasSongs && (
-            <StateMessage
-              type="empty"
-              title="No songs yet"
-              message="This artist has no published songs yet"
-            />
-          )}
           {artist.avatarUrl ? (
             <img
               src={artist.avatarUrl}
@@ -190,7 +183,13 @@ const ArtistDetail = () => {
           </button>
         </div>
 
-        {hasSongs && (
+        {!hasSongs ? (
+          <StateMessage
+            type="empty"
+            title="No songs yet"
+            message="This artist has no published songs yet"
+          />
+        ) : (
           <section>
             <h2 className="mb-4 text-2xl font-bold text-white">Popular</h2>
 

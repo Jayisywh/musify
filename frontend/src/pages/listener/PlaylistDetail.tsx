@@ -57,7 +57,7 @@ const PlaylistDetail = () => {
       title: item.song.title,
       artist: item.song.artist.name || item.song.artist.username,
       artistId: item.song.artist.id,
-      coverUrl: item.song.coverImgUrl || "/deafult-cover.png",
+      coverUrl: item.song.coverImgUrl || "/default-cover.png",
       audioUrl: item.song.audioUrl,
     }));
   }, [playlist]);
